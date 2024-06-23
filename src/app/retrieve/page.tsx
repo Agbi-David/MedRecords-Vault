@@ -21,11 +21,21 @@ export default function Retrieve() {
                     </div>
                     <div className="grid gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="familyID">Family ID</Label>
+                            <Label htmlFor="clientID">Client ID</Label>
                             <Input
-                                id="familyID"
+                                id="clientID"
                                 type="text"
-                                placeholder="Enter Family ID"
+                                placeholder="Enter Client ID"
+                                required
+                            />
+                            <div>
+                                <Separator className={'my-4'} />
+                            </div>
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="clientID"
+                                type="text"
+                                placeholder="Enter your email adress"
                                 required
                             />
                             <div>
