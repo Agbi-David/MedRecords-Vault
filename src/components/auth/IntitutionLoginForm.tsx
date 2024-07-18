@@ -80,7 +80,7 @@ const InstitutionLoginForm = () => {
                 </form>
             </CardContent>
             <CardFooter className="flex flex-col space-y-2">
-                <Link href="/institution-forgot-password" className="text-sm text-green-600 hover:underline">
+                <Link href="/forgot-password" className="text-sm text-green-600 hover:underline">
                     Forgot password?
                 </Link>
                 <p className="text-xs text-gray-500 text-center">
