@@ -84,7 +84,7 @@ const InstitutionLoginForm = () => {
                     Forgot password?
                 </Link>
                 <p className="text-xs text-gray-500 text-center">
-                    This login is for authorized institutions only. If you're a hospital administrator, please use the{' '}
+                    This login is for authorized institutions only. If you&apos;re a hospital administrator, please use the{' '}
                     <Link href="/admin-login" className="text-green-600 hover:underline">
                         admin login
                     </Link>

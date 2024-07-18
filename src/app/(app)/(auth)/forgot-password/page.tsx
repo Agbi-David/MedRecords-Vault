@@ -69,7 +69,7 @@ const ForgotPasswordPage: React.FC = () => {
                             <Mail className="h-4 w-4" />
                             <AlertTitle>Check your email</AlertTitle>
                             <AlertDescription>
-                                We've sent a password reset link to your email address. Please check your inbox.
+                                We&apos;ve sent a password reset link to your email address. Please check your inbox.
                             </AlertDescription>
                         </Alert>
                     )}

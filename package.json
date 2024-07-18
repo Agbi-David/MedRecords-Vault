@@ -3,12 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "devturbo": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbo",
+    "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
+    "ci": "payload migrate && pnpm build",
+    "generate:types": "payload generate:types",
+    "generate:schema": "payload-graphql generate:schema"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0"
   },
   "dependencies": {
+    "@payloadcms/db-mongodb": "3.0.0-beta.67",
+    "@payloadcms/next": "3.0.0-beta.67",
+    "@payloadcms/plugin-cloud": "3.0.0-beta.67",
+    "@payloadcms/richtext-lexical": "3.0.0-beta.67",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-label": "^2.0.2",
@@ -22,22 +35,34 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cross-env": "^7.0.3",
     "lucide-react": "^0.395.0",
-    "next": "14.2.4",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "15.0.0-canary.58",
+    "payload": "3.0.0-beta.67",
+    "react": "19.0.0-rc-6230622a1a-20240610",
+    "react-dom": "19.0.0-rc-6230622a1a-20240610",
+    "sharp": "0.32.6",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.4",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "@types/react": "npm:types-react@19.0.0-rc.0",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "15.0.0-rc.0",
+    "typescript": "5.5.3"
   },
-  "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@19.0.0-rc.0",
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.0"
+    }
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@19.0.0-rc.0",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.0"
+  }
 }

@@ -105,7 +105,7 @@ const LandingPage = () => {
                 </div>
 
                 <div className="mt-16 text-center">
-                    <h3 className="text-2xl font-semibold mb-4">Ready to revolutionize your hospital's record management?</h3>
+                    <h3 className="text-2xl font-semibold mb-4">Ready to revolutionize your hospital&apos;s record management?</h3>
                     <Link href="/contact-sales">
                         <Button size="lg">Contact Our Sales Team</Button>
                     </Link>
