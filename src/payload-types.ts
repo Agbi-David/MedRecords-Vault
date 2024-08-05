@@ -11,8 +11,14 @@ export interface Config {
     users: UserAuthOperations;
   };
   collections: {
-    users: User;
+    documents: Document;
+    documentRequests: DocumentRequest;
+    families: Family;
+    familyMembers: FamilyMember;
+    institutions: Institution;
+    notifications: Notification;
     media: Media;
+    users: User;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -43,20 +49,17 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "documents".
  */
-export interface User {
+export interface Document {
   id: string;
+  name: string;
+  type: string;
+  document: string | Media;
+  familyMember: string | FamilyMember;
+  uploadedBy: string | User;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -76,6 +79,124 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "familyMembers".
+ */
+export interface FamilyMember {
+  id: string;
+  fullName: string;
+  dateOfBirth: string;
+  age?: number | null;
+  address?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  bloodType?: ('A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-') | null;
+  allergies?: string | null;
+  chronicConditions?: string | null;
+  emergencyContact?: {
+    name?: string | null;
+    relation?: string | null;
+    phoneNumber?: string | null;
+  };
+  insuranceInformation?: {
+    provider?: string | null;
+    policyNumber?: string | null;
+  };
+  recentVisit?: {
+    date?: string | null;
+    reason?: string | null;
+    notes?: string | null;
+  };
+  status?: ('draft' | 'active' | 'archived') | null;
+  family: string | Family;
+  documents?: (string | Document)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "families".
+ */
+export interface Family {
+  id: string;
+  familyId?: string | null;
+  primaryContact: {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+  };
+  members?: (string | FamilyMember)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  name: string;
+  role: 'admin' | 'institution' | 'family';
+  institution?: (string | null) | Institution;
+  lastLogin?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "institutions".
+ */
+export interface Institution {
+  id: string;
+  name: string;
+  type: 'school' | 'hospital' | 'government' | 'other';
+  email: string;
+  address: string;
+  contactPerson: string;
+  contactPhone: string;
+  users?: (string | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documentRequests".
+ */
+export interface DocumentRequest {
+  id: string;
+  document: string | Document;
+  institution: string | Institution;
+  family: string | Family;
+  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  requestDate: string;
+  approvalDate?: string | null;
+  expiryDate?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: string;
+  recipient: string | User;
+  type: 'document_request' | 'request_approved' | 'document_available';
+  content: string;
+  relatedRequest?: (string | null) | DocumentRequest;
+  isRead?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

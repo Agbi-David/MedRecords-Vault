@@ -29,7 +29,7 @@ export default function LoginForm() {
     useEffect(() => {
         if (state?.success) {
             if (state.user?.role === 'admin') {
-                router.push('/admin/dashboard')
+                router.push('admin/dashboard')
             } else if (state.user?.role === 'institution') {
                 router.push('/institution/dashboard')
             } else {

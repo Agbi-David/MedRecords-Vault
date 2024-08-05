@@ -9,30 +9,30 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Lock } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { login } from '@/utils/auth';
 
 const AdminLoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-
-        if (!email || !password) {
-            setError('Please enter both email and password.');
-            return;
-        }
+        setIsLoading(true);
 
         try {
-            // Here you would typically make an API call to authenticate
-            // For demonstration, we'll just simulate a successful login
-            console.log('Logging in with:', email, password);
-            // Redirect to admin dashboard on successful login
+            const user = await login(email, password);
+            if (user.role !== 'admin') {
+                throw new Error('You do not have admin privileges');
+            }
             router.push('/admin/dashboard');
         } catch (err) {
-            setError('Invalid email or password. Please try again.');
+            setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -74,8 +74,8 @@ const AdminLoginForm = () => {
                             <AlertDescription>{error}</AlertDescription>
                         </Alert>
                     )}
-                    <Button type="submit" className="w-full">
-                        <Lock className="mr-2 h-4 w-4" /> Login
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        <Lock className="mr-2 h-4 w-4" /> {isLoading ? 'Logging in...' : 'Login'}
                     </Button>
                 </form>
             </CardContent>
@@ -84,11 +84,10 @@ const AdminLoginForm = () => {
                     Forgot password?
                 </Link>
                 <p className="text-xs text-gray-500 text-center">
-                    This login is for hospital administrators only. If you&pos;re an institution, please use the{' '}
+                    This login is for hospital administrators only. If you're an institution, please use the{' '}
                     <Link href="/institution-login" className="text-blue-600 hover:underline">
                         institution login
-                    </Link>
-                    .
+                    </Link>.
                 </p>
             </CardFooter>
         </Card>
