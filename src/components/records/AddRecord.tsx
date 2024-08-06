@@ -218,7 +218,7 @@ export default function AddRecord() {
                     <Button size="sm">Save Product</Button>
                 </div>
             </div>
-            {/*<RightSidebar/>*/}
+
         </main>
 
     );
