@@ -12,9 +12,9 @@ export interface Config {
   };
   collections: {
     documents: Document;
-    documentRequests: DocumentRequest;
+    requests: Request;
     families: Family;
-    familyMembers: FamilyMember;
+    members: Member;
     institutions: Institution;
     notifications: Notification;
     media: Media;
@@ -53,11 +53,14 @@ export interface UserAuthOperations {
  */
 export interface Document {
   id: string;
-  name: string;
-  type: string;
+  title: string;
+  description?: string | null;
+  type: 'birth-certificate' | 'medical-record' | 'passport' | 'insurance' | 'other';
   document: string | Media;
-  familyMember: string | FamilyMember;
+  family: string | Family;
+  member?: (string | null) | Member;
   uploadedBy: string | User;
+  expiryDate?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -67,7 +70,6 @@ export interface Document {
  */
 export interface Media {
   id: string;
-  alt: string;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -82,52 +84,44 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "familyMembers".
+ * via the `definition` "families".
  */
-export interface FamilyMember {
+export interface Family {
   id: string;
-  fullName: string;
-  dateOfBirth: string;
-  age?: number | null;
+  familyName: string;
   address?: string | null;
-  phoneNumber?: string | null;
-  email?: string | null;
-  bloodType?: ('A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-') | null;
-  allergies?: string | null;
-  chronicConditions?: string | null;
-  emergencyContact?: {
-    name?: string | null;
-    relation?: string | null;
-    phoneNumber?: string | null;
-  };
-  insuranceInformation?: {
-    provider?: string | null;
-    policyNumber?: string | null;
-  };
-  recentVisit?: {
-    date?: string | null;
-    reason?: string | null;
-    notes?: string | null;
-  };
-  status?: ('draft' | 'active' | 'archived') | null;
-  family: string | Family;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  familyCode?: string | null;
+  members?: (string | Member)[] | null;
   documents?: (string | Document)[] | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "families".
+ * via the `definition` "members".
  */
-export interface Family {
+export interface Member {
   id: string;
-  familyId?: string | null;
-  primaryContact: {
-    fullName: string;
-    email: string;
-    phoneNumber: string;
-  };
-  members?: (string | FamilyMember)[] | null;
+  name: string;
+  birthDate: string;
+  relationship: string;
+  gender: 'male' | 'female' | 'other';
+  family: string | Family;
+  bloodType?: string | null;
+  allergies?:
+    | {
+        allergy?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  medicalConditions?:
+    | {
+        condition?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -138,9 +132,9 @@ export interface Family {
 export interface User {
   id: string;
   name: string;
-  role: 'admin' | 'institution' | 'family';
-  institution?: (string | null) | Institution;
-  lastLogin?: string | null;
+  role: 'hospital-admin' | 'institution-user';
+  profilePicture?: string | Media | null;
+  phoneNumber?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -154,33 +148,35 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "institutions".
+ * via the `definition` "requests".
  */
-export interface Institution {
+export interface Request {
   id: string;
-  name: string;
-  type: 'school' | 'hospital' | 'government' | 'other';
-  email: string;
-  address: string;
-  contactPerson: string;
-  contactPhone: string;
-  users?: (string | User)[] | null;
+  institution: string | Institution;
+  family: string | Family;
+  document: string | Document;
+  status: 'pending' | 'approved' | 'denied';
+  requestMessage?: string | null;
+  approvedBy?: (string | null) | User;
+  approvedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "documentRequests".
+ * via the `definition` "institutions".
  */
-export interface DocumentRequest {
+export interface Institution {
   id: string;
-  document: string | Document;
-  institution: string | Institution;
-  family: string | Family;
-  status: 'pending' | 'approved' | 'rejected' | 'expired';
-  requestDate: string;
-  approvalDate?: string | null;
-  expiryDate?: string | null;
+  name: string;
+  email: string;
+  contactPerson?: string | null;
+  contactPhone?: string | null;
+  address?: string | null;
+  websiteUrl?: string | null;
+  institutionCode: string;
+  users?: (string | User)[] | null;
+  requests?: (string | Request)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -193,7 +189,7 @@ export interface Notification {
   recipient: string | User;
   type: 'document_request' | 'request_approved' | 'document_available';
   content: string;
-  relatedRequest?: (string | null) | DocumentRequest;
+  relatedRequest?: (string | null) | Request;
   isRead?: boolean | null;
   updatedAt: string;
   createdAt: string;

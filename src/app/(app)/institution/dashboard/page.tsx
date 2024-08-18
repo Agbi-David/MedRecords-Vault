@@ -1,35 +1,35 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import InstitutionDashboardClient from "@/components/dashboard/InstitutionDashboard";
-import { getCurrentUser } from '@/utils/auth';
+import React, { Suspense } from 'react';
+import { Metadata } from 'next';
 
-export default async function Page() {
-    const authToken = cookies().get('authToken')?.value
+import SearchFamily from "@/components/dashboard/SearchFamily";
+import RequestsTable from "@/components/dashboard/RequestsTable";
+import { getCurrentUser, requireAuth } from '@/lib/auth';
+import { getInstitutionForUser } from '@/lib/institution';
+import DashboardStats from "@/components/dashboard/DashboardStarts";
 
-    if (!authToken) {
-        console.log('No authToken found, redirecting to login');
-        redirect('/login')
-    }
+export const metadata: Metadata = {
+    title: 'Dashboard | Institution Portal',
+    description: 'View and manage document requests',
+};
 
-    try {
-        const userData = await getCurrentUser();
+export default async function DashboardPage() {
+    const user = await getCurrentUser();
+    requireAuth(user);
 
-        if (!userData || !userData.user) {
-            console.log('No user found despite authToken, redirecting to login');
-            redirect('/login')
-        }
+    const institution = await getInstitutionForUser(user!.id);
 
-        const user = userData.user;
-
-        if (user.role !== 'institution') {
-            console.log(`User role ${user.role} is not institution, redirecting to unauthorized`);
-            redirect('/unauthorized')
-        }
-
-
-        return <InstitutionDashboardClient user={user}  />
-    } catch (error) {
-        console.error('Error in InstitutionDashboard:', error);
-        redirect('/login')
-    }
+    return (
+        <div className="min-h-screen bg-gray-100 p-8">
+            <h1 className="text-3xl font-bold mb-8">Institution Dashboard</h1>
+            <Suspense fallback={<div>Loading stats...</div>}>
+                <DashboardStats institutionId={institution.id} />
+            </Suspense>
+            <Suspense fallback={<div>Loading search...</div>}>
+                <SearchFamily institutionId={institution.id} />
+            </Suspense>
+            <Suspense fallback={<div>Loading requests...</div>}>
+                <RequestsTable institutionId={institution.id} />
+            </Suspense>
+        </div>
+    );
 }

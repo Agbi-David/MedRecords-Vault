@@ -6,12 +6,12 @@ import {fileURLToPath} from 'url'
 import sharp from 'sharp'
 import {Media} from './collections/Media'
 import Users from "@/collections/Users";
-import {Documents} from "@/collections/Documents";
-import {DocumentRequests} from "@/collections/DocumentRequests";
-import {Families} from "@/collections/Families";
-import {FamilyMembers} from "@/collections/FamilyMembers";
-import {Institutions} from "@/collections/Institutions";
 import {Notifications} from "@/collections/Notifications";
+import Documents from "@/collections/Documents";
+import Families from "@/collections/Families";
+import Institutions from "@/collections/Institutions";
+import Members from "@/collections/Members";
+import Requests from "@/collections/Requests";
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -22,9 +22,9 @@ export default buildConfig({
     },
     collections: [
         Documents,
-        DocumentRequests,
+        Requests,
         Families,
-        FamilyMembers,
+        Members,
         Institutions,
         Notifications,
         Media,

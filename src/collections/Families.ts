@@ -4,26 +4,21 @@ import { isAdmin, isAdminOrInstitution } from '@/access/isRole';
 
 const nanoid = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6);
 
-const generateFamilyId = () => {
+const generateFamilyCode = () => {
     return `GSOW${nanoid()}`;
 };
 
-export const Families: CollectionConfig = {
+
+const Families: CollectionConfig = {
     slug: 'families',
     admin: {
-        useAsTitle: `familyId`,
-    },
-    access: {
-        create: isAdmin,
-        read: isAdminOrInstitution,
-        update: isAdmin,
-        delete: isAdmin,
+        useAsTitle: 'familyName',
     },
     hooks: {
         beforeChange: [
             ({ data }) => {
-                if (!data.familyId) {
-                    data.familyId = generateFamilyId();
+                if (!data.familyCode) {
+                    data.familyCode = generateFamilyCode();
                 }
                 return data;
             },
@@ -31,39 +26,45 @@ export const Families: CollectionConfig = {
     },
     fields: [
         {
-            name: 'familyId',
+            name: 'familyName',
             type: 'text',
-            admin: {
-                readOnly: true,
-            },
-            unique: true,
+            required: true,
         },
         {
-            name: 'primaryContact',
-            type: 'group',
-            fields: [
-                {
-                    name: 'fullName',
-                    type: 'text',
-                    required: true,
-                },
-                {
-                    name: 'email',
-                    type: 'email',
-                    required: true,
-                },
-                {
-                    name: 'phoneNumber',
-                    type: 'text',
-                    required: true,
-                },
-            ],
+            name: 'address',
+            type: 'text',
+        },
+        {
+            name: 'contactEmail',
+            type: 'email',
+        },
+        {
+            name: 'contactPhone',
+            type: 'text',
+        },
+        {
+            name: 'familyCode',
+            type: 'text',
+            unique: true,
+            admin: {
+                readOnly: true,
+                position: "sidebar"
+            },
         },
         {
             name: 'members',
             type: 'relationship',
-            relationTo: 'familyMembers',
+            relationTo: 'members',
+            hasMany: true,
+        },
+        {
+            name: 'documents',
+            type: 'relationship',
+            relationTo: 'documents',
             hasMany: true,
         },
     ],
 };
+
+export default Families;
+

@@ -1,18 +1,10 @@
-import { CollectionConfig } from 'payload'
-import { isAdmin, isAdminFieldLevel, isAdminOrSelf } from "@/access/isRole";
+import { CollectionConfig } from 'payload';
 
 const Users: CollectionConfig = {
     slug: 'users',
-    auth: true,
+    auth: true, // This enables authentication
     admin: {
-        useAsTitle: 'email',
-        group: 'Admin',
-    },
-    access: {
-        create: () => true,
-        read: isAdminOrSelf,
-        update: isAdminOrSelf,
-        delete: isAdmin,
+        useAsTitle: 'name',
     },
     fields: [
         {
@@ -21,68 +13,30 @@ const Users: CollectionConfig = {
             required: true,
         },
         {
-            name: 'email',
-            type: 'email',
-            unique: true,
-            required: true,
-        },
-        {
             name: 'role',
             type: 'select',
-            required: true,
             options: [
-                { label: 'Admin', value: 'admin' },
-                { label: 'Institution', value: 'institution' },
-                { label: 'Family', value: 'family' },
+                {
+                    label: 'Hospital Admin',
+                    value: 'hospital-admin',
+                },
+                {
+                    label: 'Institution User',
+                    value: 'institution-user',
+                },
             ],
-            defaultValue: 'institution', // Set a default value
-            admin: {
-                position: 'sidebar',
-            },
+            required: true,
         },
         {
-            name: 'institution',
-            type: 'relationship',
-            relationTo: 'institutions',
-            required: false,
-            admin: {
-                condition: (data) => data.role === 'institution',
-            },
+            name: 'profilePicture',
+            type: 'upload',
+            relationTo: 'media', // Assuming you have a media collection
         },
         {
-            name: 'lastLogin',
-            type: 'date',
-            admin: {
-                position: 'sidebar',
-                readOnly: true,
-            },
+            name: 'phoneNumber',
+            type: 'text',
         },
     ],
-    hooks: {
-        beforeChange: [
-            ({ req, operation, data }) => {
-                if (operation === 'create') {
-                    if (!data.role) {
-                        data.status = 'pending';
-                        data.role = 'family'; // Default role for general signups
-                    }
-                }
-                if (operation === 'update' && !isAdmin({ req })) {
-                    delete data.role;
-                    delete data.status;
-                }
-                return data;
-            },
-        ],
-        afterLogin: [
-            ({ doc }: any) => {
-                return {
-                    ...doc,
-                    lastLogin: new Date(),
-                };
-            },
-        ],
-    },
 };
 
 export default Users;

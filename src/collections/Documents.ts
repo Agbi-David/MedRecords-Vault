@@ -1,26 +1,45 @@
-import {isAdmin, isInstitutionWithApprovedRequest} from "@/access/isRole";
-import {CollectionConfig} from "payload";
+import { CollectionConfig } from 'payload';
 
-export const Documents: CollectionConfig = {
+const Documents: CollectionConfig = {
     slug: 'documents',
     admin: {
-        useAsTitle: 'name',
-    },
-    access: {
-        create: isAdmin,
-        read: isInstitutionWithApprovedRequest || isAdmin,
-        update: isAdmin,
-        delete: isAdmin,
+        useAsTitle: 'title',
     },
     fields: [
         {
-            name: 'name',
+            name: 'title',
             type: 'text',
             required: true,
         },
         {
+            name: 'description',
+            type: 'textarea',
+        },
+        {
             name: 'type',
-            type: 'text',
+            type: 'select',
+            options: [
+                {
+                    label: 'Birth Certificate',
+                    value: 'birth-certificate',
+                },
+                {
+                    label: 'Medical Record',
+                    value: 'medical-record',
+                },
+                {
+                    label: 'Passport',
+                    value: 'passport',
+                },
+                {
+                    label: 'Insurance',
+                    value: 'insurance',
+                },
+                {
+                    label: 'Other',
+                    value: 'other',
+                },
+            ],
             required: true,
         },
         {
@@ -30,10 +49,15 @@ export const Documents: CollectionConfig = {
             required: true,
         },
         {
-            name: 'familyMember',
+            name: 'family',
             type: 'relationship',
-            relationTo: 'familyMembers',
+            relationTo: 'families',
             required: true,
+        },
+        {
+            name: 'member',
+            type: 'relationship',
+            relationTo: 'members',
         },
         {
             name: 'uploadedBy',
@@ -41,5 +65,11 @@ export const Documents: CollectionConfig = {
             relationTo: 'users',
             required: true,
         },
+        {
+            name: 'expiryDate',
+            type: 'date',
+        },
     ],
 };
+
+export default Documents;

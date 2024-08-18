@@ -18,7 +18,7 @@ const LandingPage = () => {
                             <Link href="/admin">
                                 <Button variant="ghost">Admin Login</Button>
                             </Link>
-                            <Link href="/institution-login">
+                            <Link href="/institution/auth/login">
                                 <Button variant="outline">Institution Login</Button>
                             </Link>
                             <Link href="/demo-request">

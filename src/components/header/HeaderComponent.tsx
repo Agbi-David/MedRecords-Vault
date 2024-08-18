@@ -20,8 +20,15 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import {logout} from "@/lib/auth";
+
 
 const Header = () => {
+    const handleLogout = async () => {
+        await logout();
+    };
+
+
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 sm:px-6">
             <Sheet>
@@ -95,7 +102,7 @@ const Header = () => {
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuItem>Settings</DropdownMenuItem>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </header>

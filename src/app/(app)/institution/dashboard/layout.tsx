@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import Sidebar from '@/components/sidebar/SiderbarComponent';
 import Header from "@/components/header/HeaderComponent";
 import Footer from "@/components/footer/FooterComponent";
+import InstitutionSidebar from "@/components/sidebar/InstitutionDashboardSidebar";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -18,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
     return (
         <div className="flex h-screen bg-background">
-            <Sidebar expanded={sidebarExpanded} onToggle={toggleSidebar}/>
+            <InstitutionSidebar expanded={sidebarExpanded} onToggle={toggleSidebar}/>
             <div className="flex flex-col flex-1 overflow-hidden">
                 <Header/>
                 <main
