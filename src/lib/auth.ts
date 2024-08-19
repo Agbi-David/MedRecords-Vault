@@ -86,46 +86,49 @@
 //
 //
 
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { User } from '@/payload-types';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { User } from "@/payload-types";
 
-export async function getCurrentUser(): Promise<User | null> {
-    const cookieStore = cookies();
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
-            headers: {
-                Cookie: cookieStore.toString(),
-            },
-        });
-        if (!response.ok) {
-            if (response.status === 401) {
-                return null;
-            }
-            throw new Error('Failed to fetch current user');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching current user:', error);
+export async function getCurrentUser(): Promise<{ user: User } | null> {
+  const cookieStore = cookies();
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`,
+      {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      }
+    );
+    if (!response.ok) {
+      if (response.status === 401) {
         return null;
+      }
+      throw new Error("Failed to fetch current user");
     }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    return null;
+  }
 }
 
 export async function requireAuth(user: User | null) {
-    if (!user || user.role !== 'institution-user') {
-        redirect('/institution/auth/login');
-    }
+  if (!user || user.role !== "institution-user") {
+    redirect("/institution/auth/login");
+  }
 }
 
 export async function logout() {
-    const cookieStore = cookies();
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`, {
-        method: 'POST',
-        headers: {
-            Cookie: cookieStore.toString(),
-        },
-    });
-    redirect('/institution/auth/login');
+  const cookieStore = cookies();
+  await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`, {
+    method: "POST",
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+  redirect("/institution/auth/login");
 }

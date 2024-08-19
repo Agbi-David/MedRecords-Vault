@@ -6,6 +6,7 @@ import RequestsTable from "@/components/dashboard/RequestsTable";
 import { getCurrentUser, requireAuth } from "@/lib/auth";
 import { getInstitutionForUser } from "@/lib/institution";
 import DashboardStats from "@/components/dashboard/DashboardStarts";
+import { getDocumentRequests } from "@/lib/requests";
 
 export const metadata: Metadata = {
   title: "Dashboard | Institution Portal",
@@ -14,9 +15,13 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
-  requireAuth(user);
-
-  const institution = await getInstitutionForUser(user!.id);
+  requireAuth(user?.user || null);
+  console.log(user?.user.id);
+  const institution = await getInstitutionForUser(
+    (user?.user.id ?? "").toString()
+  );
+  const getDocrequests = await getDocumentRequests();
+  console.log(institution);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -29,7 +34,7 @@ export default async function DashboardPage() {
       </Suspense>
       <Suspense fallback={<div>Loading requests...</div>}>
         <RequestsTable
-          initialRequests={[]}
+          initialRequests={getDocrequests ?? []}
           //  institutionId={institution?.id ?? ""}
         />
       </Suspense>

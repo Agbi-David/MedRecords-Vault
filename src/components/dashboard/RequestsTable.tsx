@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,18 +10,19 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Request } from "@/payload-types";
+import { getDocumentRequests } from "@/lib/requests";
 
 interface RequestsTableProps {
   initialRequests: Request[];
 }
 
 const RequestsTable: React.FC<RequestsTableProps> = ({ initialRequests }) => {
-  const [requests, setRequests] = useState(initialRequests ?? []);
+  // const [requests, setRequests] = useState(initialRequests ?? []);
 
   const handleDownload = async (documentId: string) => {
     try {
       const response = await fetch(`/api/documents/${documentId}/download`);
-      if (!response.ok) throw new Error("Failed to download document");
+      if (!response.ok) return console.log("Failed to download document");
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -37,7 +37,7 @@ const RequestsTable: React.FC<RequestsTableProps> = ({ initialRequests }) => {
       // Handle error (e.g., show an error message to the user)
     }
   };
-
+  console.log(initialRequests);
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mt-8">
       <h2 className="text-2xl font-semibold mb-4">Recent Document Requests</h2>
@@ -52,7 +52,7 @@ const RequestsTable: React.FC<RequestsTableProps> = ({ initialRequests }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {requests?.map((request) => (
+          {initialRequests?.map((request) => (
             <TableRow key={request.id}>
               <TableCell>
                 {typeof request.family === "object"

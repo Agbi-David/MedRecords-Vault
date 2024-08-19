@@ -1,8 +1,10 @@
 import axios from "axios";
-import { cookies } from "next/headers";
-
+// import {
+//   deleteSessionStorageItem,
+//   getSessionStorageItem,
+// } from "@/helpers/session-storage-helper";
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_APP_URL,
   timeout: 20000,
   headers: {
     "Content-Type": "application/json",
@@ -11,7 +13,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = cookies().get("authToken")?.value;
+    const token = "";
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -35,7 +37,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Handle unauthorized access here, such as redirecting to login page or showing a message
       console.log("Unauthorized request:", error.response.data);
-      cookies().delete;
+      // deleteSessionStorageItem({ key: "token" });
       window.location.reload();
     }
     // Return the error to be handled by the calling function
