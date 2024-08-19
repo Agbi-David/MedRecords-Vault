@@ -76,22 +76,7 @@ export async function register(prevState: any, formData: FormData) {
     }
 
     const data = await response.json();
-    console.log("Login successful. User data:", data.user);
-
-    cookies().set("authToken", data.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-    });
-
-    // Redirect based on user role
-    if (data.user.role === "admin") {
-      redirect("/hospital/dashboard");
-    } else if (data.user.role === "institution") {
-      redirect("/institution/dashboard");
-    } else {
-      redirect("/dashboard");
-    }
+    console.log("Register successful. User data:");
   } catch (error) {
     console.error("Login error:", error);
     return { error: "An unexpected error occurred. Please try again." };
