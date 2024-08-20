@@ -19,25 +19,23 @@ interface RequestsTableProps {
 const RequestsTable: React.FC<RequestsTableProps> = ({ initialRequests }) => {
   // const [requests, setRequests] = useState(initialRequests ?? []);
 
-  const handleDownload = async (documentId: string) => {
-    try {
-      const response = await fetch(`/api/documents/${documentId}/download`);
-      if (!response.ok) return console.log("Failed to download document");
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = "document.pdf"; // You might want to get the actual filename from the backend
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error downloading document:", error);
-      // Handle error (e.g., show an error message to the user)
-    }
-  };
-  console.log(initialRequests);
+  async function handleDownload(documentId: string) {
+    const request = await fetch(`/api/documents/${documentId}`);
+    const response = await request.json();
+    const file = response.document;
+    //     if (!response.ok) return console.log("Failed to download document");
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL; // Replace with your actual base URL
+    const fileUrl = `${baseUrl}${file.url}`;
+    const filename = file.filename;
+
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mt-8">
       <h2 className="text-2xl font-semibold mb-4">Recent Document Requests</h2>

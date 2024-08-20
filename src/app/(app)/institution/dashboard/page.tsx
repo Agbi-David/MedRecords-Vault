@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   requireAuth(user?.user || null);
-  console.log(user?.user.id);
+  console.log(user?.user?.id);
   const institution = await getInstitutionForUser(
-    (user?.user.id ?? "").toString()
+    (user?.user?.id ?? "").toString()
   );
   const getDocrequests = await getDocumentRequests();
-  console.log(institution);
+  console.log("institution... ", institution);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
