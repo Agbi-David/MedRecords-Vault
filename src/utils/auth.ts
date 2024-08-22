@@ -26,6 +26,7 @@ export async function login(prevState: any, formData: FormData) {
       console.error("Login failed. Server response:", errorText);
       return {
         error: "Login failed. Please check your credentials and try again.",
+        role: "",
       };
     }
 
@@ -48,7 +49,10 @@ export async function login(prevState: any, formData: FormData) {
     }
   } catch (error) {
     console.error("Login error:", error);
-    return { error: "An unexpected error occurred. Please try again." };
+    return {
+      error: "An unexpected error occurred. Please try again.",
+      role: "",
+    };
   }
 }
 
