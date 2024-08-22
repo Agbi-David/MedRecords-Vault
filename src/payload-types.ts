@@ -136,7 +136,7 @@ export interface Member {
 export interface User {
   id: string;
   name: string;
-  role: 'hospital-admin' | 'institution-user';
+  role: 'hospital-admin' | 'institution-user'|'admin'|'institution'|'family';
   profilePicture?: string | Media | null;
   phoneNumber?: string | null;
   updatedAt: string;
