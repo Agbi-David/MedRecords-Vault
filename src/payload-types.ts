@@ -19,6 +19,8 @@ export interface Config {
     notifications: Notification;
     media: Media;
     users: User;
+    birthCertificates: BirthCertificate;
+    birthCertificateRequests: BirthCertificateRequest;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -104,8 +106,10 @@ export interface Family {
  */
 export interface Member {
   id: string;
-  name: string;
-  birthDate: string;
+  firstName: string;
+  surname: string;
+  title: string;
+  middleName: string;
   relationship: string;
   gender: 'male' | 'female' | 'other';
   family: string | Family;
@@ -191,6 +195,40 @@ export interface Notification {
   content: string;
   relatedRequest?: (string | null) | Request;
   isRead?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "birthCertificates".
+ */
+export interface BirthCertificate {
+  id: string;
+  member: string | Member;
+  title: string;
+  Sex: 'male' | 'female';
+  dateOfBirth: string;
+  placeOfBirth: string;
+  townOrVillage: string;
+  LGA: string;
+  stateOfBirth: string;
+  fatherName: string;
+  motherName: string;
+  certCode?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "birthCertificateRequests".
+ */
+export interface BirthCertificateRequest {
+  id: string;
+  certificate: string | BirthCertificate;
+  status: 'pending' | 'approved' | 'denied';
+  requestMessage?: string | null;
+  approvedBy?: (string | null) | User;
+  approvedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }

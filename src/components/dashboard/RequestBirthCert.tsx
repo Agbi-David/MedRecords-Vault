@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Document } from "@/payload-types";
+import { BirthCertificate, Document } from "@/payload-types";
 
-interface RequestDocumentProps {
-  document: Document;
+interface RequestBirthCertProps {
+  document: BirthCertificate;
   onSubmit: (message: string) => void;
   onCancel: () => void;
 }
 
-const RequestDocument: React.FC<RequestDocumentProps> = ({
+const RequestBirthCert: React.FC<RequestBirthCertProps> = ({
   document,
   onSubmit,
   onCancel,
@@ -25,7 +25,7 @@ const RequestDocument: React.FC<RequestDocumentProps> = ({
   return (
     <Card className="mt-4">
       <CardHeader>
-        <CardTitle>Request Document: {document.title}</CardTitle>
+        <CardTitle>Request Birth Certificate </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
@@ -47,4 +47,4 @@ const RequestDocument: React.FC<RequestDocumentProps> = ({
   );
 };
 
-export default RequestDocument;
+export default RequestBirthCert;

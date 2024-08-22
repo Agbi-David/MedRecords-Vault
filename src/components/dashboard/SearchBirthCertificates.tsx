@@ -12,22 +12,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Family, Document, Request } from "@/payload-types";
+import { Family, Document, Request, BirthCertificate } from "@/payload-types";
 import RequestDocument from "@/components/dashboard/RequestDocuement";
+import RequestBirthCert from "./RequestBirthCert";
 
-interface SearchFamilyProps {
+interface SearchBirthCertificatesProps {
   institutionId: string; // Add this prop
 }
 
-const SearchFamily: React.FC<SearchFamilyProps> = ({ institutionId }) => {
-  const [familyCode, setFamilyCode] = useState("");
+const SearchBirthCertificates: React.FC<SearchBirthCertificatesProps> = ({
+  institutionId,
+}) => {
+  const [certCode, setCertCode] = useState("");
   const [family, setFamily] = useState<Family | null>(null);
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<BirthCertificate[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
-    null
-  );
+  const [selectedDocument, setSelectedDocument] =
+    useState<BirthCertificate | null>(null);
   const [requests, setRequests] = useState<Record<string, Request>>({});
 
   const handleSearch = async () => {
@@ -35,56 +37,42 @@ const SearchFamily: React.FC<SearchFamilyProps> = ({ institutionId }) => {
     setError(null);
     try {
       // First, fetch the family
-      const familyResponse = await fetch(
-        `/api/families?where[familyCode][equals]=${familyCode}`
+      const certResponse = await fetch(
+        `/api/birthCertificates?where[certCode][equals]=${certCode}`
       );
-      if (!familyResponse.ok) {
-        throw new Error("Family not found");
+      if (!certResponse.ok) {
+        throw new Error("cert not found");
       }
-      const familyData = await familyResponse.json();
+      const certData = await certResponse.json();
 
-      if (familyData.docs.length === 0) {
-        throw new Error("Family not found");
+      if (certData.docs.length === 0) {
+        throw new Error("cert not found");
       }
 
-      const fetchedFamily = familyData.docs[0];
-      setFamily(fetchedFamily);
-
-      // Then, fetch the documents for this family
-      const documentsResponse = await fetch(
-        `/api/documents?where[family][equals]=${fetchedFamily.id}`
-      );
-      if (!documentsResponse.ok) {
-        throw new Error("Failed to fetch documents");
-      }
-      const documentsData = await documentsResponse.json();
-      setDocuments(documentsData.docs);
+      setDocuments(certData.docs);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-      setFamily(null);
       setDocuments([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRequestDocument = (document: Document) => {
+  const handleRequestDocument = (document: BirthCertificate) => {
     setSelectedDocument(document);
   };
 
   const handleRequestSubmit = async (message: string) => {
-    if (!family || !selectedDocument) return;
+    if (!selectedDocument) return;
 
     try {
-      const response = await fetch("/api/requests", {
+      const response = await fetch("/api/birthCertificateRequests", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          institution: institutionId,
-          family: family.id,
-          document: selectedDocument.id,
+          certificate: selectedDocument.id,
           requestMessage: message,
         }),
       });
@@ -125,14 +113,14 @@ const SearchFamily: React.FC<SearchFamilyProps> = ({ institutionId }) => {
     <>
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Search for Family</CardTitle>
+          <CardTitle>Search for Birth Certificates</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex space-x-4">
             <Input
-              placeholder="Enter family code"
-              value={familyCode}
-              onChange={(e) => setFamilyCode(e.target.value)}
+              placeholder="Enter Birth Cert code"
+              value={certCode}
+              onChange={(e) => setCertCode(e.target.value)}
             />
             <Button onClick={handleSearch} disabled={loading}>
               {loading ? "Searching..." : "Search"}
@@ -164,24 +152,27 @@ const SearchFamily: React.FC<SearchFamilyProps> = ({ institutionId }) => {
       {documents.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Family Documents</CardTitle>
+            <CardTitle>Birth Certificate</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead>Full name</TableHead>
+                  <TableHead>Father Name</TableHead>
+                  <TableHead>Mother Name</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {documents.map((doc) => (
                   <TableRow key={doc.id}>
-                    <TableCell>{doc.title}</TableCell>
-                    <TableCell>{doc.type}</TableCell>
-                    <TableCell>{doc.description}</TableCell>
+                    <TableCell>
+                      {doc?.member?.firstName} {doc?.member?.surname}{" "}
+                      {doc?.member?.middleName}
+                    </TableCell>
+                    <TableCell>{doc.fatherName}</TableCell>
+                    <TableCell>{doc.motherName}</TableCell>
                     <TableCell>
                       {requests[doc.id]?.status === "approved" ? (
                         <Button onClick={() => handleDownload(doc.id)}>
@@ -204,7 +195,7 @@ const SearchFamily: React.FC<SearchFamilyProps> = ({ institutionId }) => {
       )}
 
       {selectedDocument && (
-        <RequestDocument
+        <RequestBirthCert
           document={selectedDocument}
           onSubmit={handleRequestSubmit}
           onCancel={() => setSelectedDocument(null)}
@@ -214,4 +205,4 @@ const SearchFamily: React.FC<SearchFamilyProps> = ({ institutionId }) => {
   );
 };
 
-export default SearchFamily;
+export default SearchBirthCertificates;
