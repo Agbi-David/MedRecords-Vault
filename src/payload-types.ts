@@ -204,7 +204,11 @@ export interface Notification {
  */
 export interface BirthCertificate {
   id: string;
+<<<<<<< HEAD
   member: string | Member;
+=======
+  member: Member;
+>>>>>>> 77a345516886e3c8741461270b8ad860eb256995
   title: string;
   Sex: 'male' | 'female';
   dateOfBirth: string;
@@ -224,7 +228,11 @@ export interface BirthCertificate {
  */
 export interface BirthCertificateRequest {
   id: string;
+<<<<<<< HEAD
   certificate: string | BirthCertificate;
+=======
+  certificate:  BirthCertificate;
+>>>>>>> 77a345516886e3c8741461270b8ad860eb256995
   status: 'pending' | 'approved' | 'denied';
   requestMessage?: string | null;
   approvedBy?: (string | null) | User;
