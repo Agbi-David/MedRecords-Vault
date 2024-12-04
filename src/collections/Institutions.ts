@@ -1,33 +1,14 @@
-import { CollectionConfig } from "payload";
-import { isAdmin, isAdminOrInstitution, isAdminOrOwner } from "@/access/isRole";
+import { CollectionConfig } from 'payload';
 
-export const Institutions: CollectionConfig = {
+const Institutions: CollectionConfig = {
     slug: 'institutions',
     admin: {
         useAsTitle: 'name',
-        group: 'Admin',
-    },
-    access: {
-        create: () => true,
-        read: isAdminOrInstitution,
-        update: isAdminOrOwner,
-        delete: isAdmin,
     },
     fields: [
         {
             name: 'name',
             type: 'text',
-            required: true,
-        },
-        {
-            name: 'type',
-            type: 'select',
-            options: [
-                { label: 'School', value: 'school' },
-                { label: 'Hospital', value: 'hospital' },
-                { label: 'Government Agency', value: 'government' },
-                { label: 'Other', value: 'other' },
-            ],
             required: true,
         },
         {
@@ -37,28 +18,38 @@ export const Institutions: CollectionConfig = {
             unique: true,
         },
         {
-            name: 'address',
-            type: 'textarea',
-            required: true,
-        },
-        {
             name: 'contactPerson',
             type: 'text',
-            required: true,
         },
         {
             name: 'contactPhone',
             type: 'text',
+        },
+        {
+            name: 'address',
+            type: 'text',
+        },
+        {
+            name: 'websiteUrl',
+            type: 'text',
+        },
+        {
+            name: 'institutionCode',
+            type: 'text',
             required: true,
+            unique: true,
         },
         {
             name: 'users',
             type: 'relationship',
             relationTo: 'users',
             hasMany: true,
-            admin: {
-                description: 'Users associated with this institution',
-            },
+        },
+        {
+            name: 'requests',
+            type: 'relationship',
+            relationTo: 'requests',
+            hasMany: true,
         },
     ],
 };

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Clock, Search, Loader2 } from 'lucide-react';
-import { User, Document, DocumentRequest, Family } from "@/payload-types";
+import { User, Document, Request, Family } from "@/payload-types";
 import {useToast} from "@/components/ui/use-toast";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const InstitutionDashboardClient: React.FC<Props> = ({ user }) => {
-    const [requests, setRequests] = useState<DocumentRequest[]>([]);
+    const [requests, setRequests] = useState<Request[]>([]);
     const [isLoadingRequests, setIsLoadingRequests] = useState(true);
     const [requestsError, setRequestsError] = useState<string | null>(null);
 
@@ -106,7 +106,7 @@ const InstitutionDashboardClient: React.FC<Props> = ({ user }) => {
                 description: "Access request sent successfully.",
             });
             // Send approval email
-            await sendApprovalEmail(searchResults[0].primaryContact.email, `${window.location.origin}/approve-document?token=${newRequest.id}`);
+            await sendApprovalEmail(searchResults[0].contactEmail, `${window.location.origin}/approve-document?token=${newRequest.id}`);
             toast({
                 title: "Success",
                 variant: "default",
@@ -122,7 +122,7 @@ const InstitutionDashboardClient: React.FC<Props> = ({ user }) => {
         }
     };
 
-    const sendApprovalEmail = async (to: string, approvalLink: string) => {
+    const sendApprovalEmail = async (to: string | null, approvalLink: string) => {
         const response = await fetch('/api/send-approval-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

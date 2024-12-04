@@ -33,7 +33,7 @@ export const Notifications: CollectionConfig = {
         {
             name: 'relatedRequest',
             type: 'relationship',
-            relationTo: 'documentRequests',
+            relationTo: 'requests',
         },
         {
             name: 'isRead',
